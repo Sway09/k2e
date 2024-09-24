@@ -3,62 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Capture Image and OCR</title>
+    <title>Kannada to English OCR & Translation</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        .container { text-align: center; margin-top: 50px; }
-        #preview { width: 300px; height: 300px; border: 1px solid black; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #preview {
+            max-width: 300px;
+            margin-top: 20px;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f1f1f1;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Capture Image and Extract Text</h1>
-        <input type="file" accept="image/*" capture="camera" id="cameraInput" onchange="previewImage(event)">
-        <br><br>
-        <canvas id="canvas" style="display: none;"></canvas>
-        <div id="preview"></div>
-        <br>
-        <button onclick="processImage()">Extract Text</button>
-        <h3>Extracted Text:</h3>
-        <div id="output"></div>
-    </div>
+    <h1>Upload Image for Kannada to English OCR & Translation</h1>
+
+    <input type="file" accept="image/*" id="fileInput" onchange="previewImage(event)">
+    <br><br>
+    <img id="preview" width="300px">
+    <br><br>
+    <button onclick="processImage()">Extract & Translate Text</button>
+    <div id="output"></div>
 
     <script>
         function previewImage(event) {
             const reader = new FileReader();
             reader.onload = function () {
-                const preview = document.getElementById('preview');
-                const image = new Image();
-                image.src = reader.result;
-                preview.innerHTML = '';
-                preview.appendChild(image);
+                const img = document.getElementById('preview');
+                img.src = reader.result;
             }
             reader.readAsDataURL(event.target.files[0]);
         }
 
         function processImage() {
-            const canvas = document.getElementById('canvas');
-            const previewImage = document.querySelector('#preview img');
-            const context = canvas.getContext('2d');
-            canvas.width = previewImage.width;
-            canvas.height = previewImage.height;
-            context.drawImage(previewImage, 0, 0, previewImage.width, previewImage.height);
-
-            const imageData = canvas.toDataURL('image/png');
-
-            // Send the image to the server for OCR processing
+            const img = document.getElementById('preview').src;
             fetch('/process_image', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ image: imageData })
+                body: JSON.stringify({ image: img })
             })
             .then(response => response.json())
             .then(data => {
                 const output = document.getElementById('output');
                 output.textContent = data.text || data.error;
-            })
-            .catch(error => {
-                console.error('Error:', error);
             });
         }
     </script>
