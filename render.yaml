@@ -1,8 +1,9 @@
 services:
   - type: web
-    name: k2e
-    env: docker
-    dockerfilePath: ./Dockerfile
+    name: ktoe  # your app's name
+    env: python
+    buildCommand: ""  # leave this empty as Render auto-detects Python
+    startCommand: gunicorn app:app -b 0.0.0.0:10000
     envVars:
       - key: TESSDATA_PREFIX
         value: /usr/share/tesseract-ocr/4.00/tessdata/
