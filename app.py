@@ -10,7 +10,15 @@ app = Flask(__name__)
 
 # Set the TESSDATA_PREFIX environment variable dynamically
 TESSDATA_PREFIX = os.path.join(os.getcwd(), "tessdata")
-pytesseract.pytesseract.tesseract_cmd = '/usr/local/bin/tesseract'  # Adjust this if necessary
+
+# Set the Tesseract binary path based on the environment
+if os.path.exists( '/usr/local/bin/tesseract' ):
+    pytesseract.pytesseract.tesseract_cmd = '/usr/local/bin/tesseract'  # Local path for macOS/Linux
+elif os.path.exists( '/usr/bin/tesseract' ):
+    pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'  # Path for Render/Linux environments
+else:
+    raise EnvironmentError( "Tesseract not found. Please install Tesseract and set the correct path." )
+# Adjust this if necessary
 os.environ['TESSDATA_PREFIX'] = TESSDATA_PREFIX
 
 # Initialize the translator
