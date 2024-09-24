@@ -12,13 +12,14 @@ app = Flask(__name__)
 TESSDATA_PREFIX = os.path.join(os.getcwd(), "tessdata")
 
 # Set the Tesseract binary path based on the environment
-if os.path.exists( '/usr/local/bin/tesseract' ):
+if os.path.exists('/usr/local/bin/tesseract'):
     pytesseract.pytesseract.tesseract_cmd = '/usr/local/bin/tesseract'  # Local path for macOS/Linux
-elif os.path.exists( '/usr/bin/tesseract' ):
+elif os.path.exists('/usr/bin/tesseract'):
     pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'  # Path for Render/Linux environments
 else:
-    raise EnvironmentError( "Tesseract not found. Please install Tesseract and set the correct path." )
-# Adjust this if necessary
+    raise EnvironmentError("Tesseract not found. Please install Tesseract and set the correct path.")
+
+# Set the TESSDATA_PREFIX in the environment variables
 os.environ['TESSDATA_PREFIX'] = TESSDATA_PREFIX
 
 # Initialize the translator
@@ -62,6 +63,7 @@ def process_image():
     except Exception as e:
         return jsonify({"error": str(e)})
 
+# Route to check Tesseract version
 @app.route('/tesseract-version')
 def tesseract_version():
     try:
@@ -70,6 +72,7 @@ def tesseract_version():
     except Exception as e:
         return f"Error: {e}"
 
-
+# Main entry point for the Flask app
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 10000))  # Render uses PORT environment variable
+    app.run(host='0.0.0.0', port=port, debug=True)

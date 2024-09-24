@@ -15,11 +15,11 @@ COPY . /app
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose port 5000 for Flask
-EXPOSE 5000
+# Expose port 10000 for Flask
+EXPOSE 10000
 
 # Set Tesseract data environment variable
 ENV TESSDATA_PREFIX="/usr/share/tesseract-ocr/4.00/tessdata/"
 
 # Command to run the Flask app using gunicorn in the container
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app"]
+CMD ["gunicorn", "-b", "0.0.0.0:10000", "app:app"]
