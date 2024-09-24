@@ -62,5 +62,14 @@ def process_image():
     except Exception as e:
         return jsonify({"error": str(e)})
 
+@app.route('/tesseract-version')
+def tesseract_version():
+    try:
+        version = pytesseract.get_tesseract_version()
+        return f"Tesseract version: {version}"
+    except Exception as e:
+        return f"Error: {e}"
+
+
 if __name__ == '__main__':
     app.run(debug=True)
